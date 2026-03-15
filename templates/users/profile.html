@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Profil de {{ profile_user.username }}{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    {% if profile_user.avatar %}
+                        <img src="{{ profile_user.avatar.url }}" alt="{{ profile_user.username }}" class="img-fluid rounded-circle mb-3" style="max-width: 150px;">
+                    {% else %}
+                        <i class="fas fa-user-circle fa-8x mb-3 text-muted"></i>
+                    {% endif %}
+                    <h3>{{ profile_user.username }}</h3>
+                    <p class="text-muted">{{ profile_user.email }}</p>
+
+                    {% if profile_user.website %}
+                        <p>
+                            <a href="{{ profile_user.website }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-globe"></i> Site Web
+                            </a>
+                        </p>
+                    {% endif %}
+
+                    {% if user == profile_user %}
+                        <a href="{% url 'profile_update' %}" class="btn btn-sm btn-warning">
+                            <i class="fas fa-edit"></i> Modifier le profil
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4>À propos</h4>
+                </div>
+                <div class="card-body">
+                    {% if profile_user.bio %}
+                        <p>{{ profile_user.bio }}</p>
+                    {% else %}
+                        <p class="text-muted">Cet utilisateur n'a pas encore rempli sa biographie.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if user == profile_user %}
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h4>Mes Articles</h4>
+                    </div>
+                    <div class="card-body">
+                        {% if profile_user.articles.count > 0 %}
+                            <div class="list-group">
+                                {% for article in profile_user.articles.all %}
+                                    <a href="{{ article.get_absolute_url }}" class="list-group-item list-group-item-action">
+                                        {{ article.title }}
+                                        <span class="badge bg-secondary float-end">{{ article.comments.count }} commentaires</span>
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted">Vous n'avez pas encore publié d'articles.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

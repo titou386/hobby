@@ -1,0 +1,49 @@
+# EditorConfig — https://editorconfig.org
+root = true
+
+# Défaut pour tous les fichiers
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Python / Django
+[*.py]
+indent_style = space
+indent_size = 4
+max_line_length = 88
+
+# JavaScript
+[*.{js,mjs,cjs}]
+indent_style = space
+indent_size = 2
+
+# HTML / Django templates
+[*.{html,htm}]
+indent_style = space
+indent_size = 2
+
+# CSS / SCSS / SASS
+[*.{css,scss,sass}]
+indent_style = space
+indent_size = 2
+
+# Bash
+[*.{sh,bash}]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+
+# JSON / YAML (config files)
+[*.{json,yaml,yml}]
+indent_style = space
+indent_size = 2
+
+# Markdown
+[*.md]
+trim_trailing_whitespace = false
+
+# Makefile (doit utiliser des tabs)
+[Makefile]
+indent_style = tab
