@@ -8,6 +8,7 @@ from .views import (
     CategoryListView,
     CategoryDetailView,
     TagListView,
+    TagDetailView,
 )
 
 app_name = "blog"
@@ -21,4 +22,5 @@ urlpatterns = [
     path("categories/", CategoryListView.as_view(), name="category_list"),
     path("categories/<slug:slug>/", CategoryDetailView.as_view(), name="category_detail"),
     path("tags/", TagListView.as_view(), name="tag_list"),
+    path("tags/<slug:slug>/", TagDetailView.as_view(), name="tag_detail"),
 ]

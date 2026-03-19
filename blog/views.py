@@ -78,3 +78,18 @@ class CategoryDetailView(ListView):
         context = super().get_context_data(**kwargs)
         context["category"] = Category.objects.get(slug=self.kwargs["slug"])
         return context
+
+class TagDetailView(ListView):
+    model = Article
+    template_name = "blog/tag_detail.html"
+    context_object_name = "articles"
+    paginate_by = 10
+
+    def get_queryset(self):
+        tag = Tag.objects.get(slug=self.kwargs["slug"])
+        return Article.objects.filter(tags=tag, published=True).order_by("-created_at")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["tag"] = Tag.objects.get(slug=self.kwargs["slug"])
+        return context

@@ -1,39 +1,81 @@
-<!-- Dans la section des commentaires -->
-{% if user.is_authenticated %}
-    <div class="card mb-4">
-        <div class="card-body">
-            <h5 class="card-title">Laisser un commentaire</h5>
-            <form method="post" action="{% url 'comments:add_comment' article.slug %}">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <label for="content" class="form-label">Votre commentaire</label>
-                    <textarea class="form-control" id="content" name="content" rows="3" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Publier</button>
-            </form>
-        </div>
-    </div>
-{% else %}
-    <div class="alert alert-info">
-        <a href="{% url 'login' %}?next={{ request.path }}">Connectez-vous</a> pour laisser un commentaire.
-    </div>
-{% endif %}
+{% extends "base.html" %}
 
-<div class="list-group">
-    {% for comment in article.comments.all %}
-        <div class="list-group-item">
-            <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1">{{ comment.author.username }}</h5>
-                <small>{{ comment.created_at|timesince }} ago</small>
-            </div>
-            <p class="mb-1">{{ comment.content }}</p>
-            <small class="text-muted">
-                {% if user == comment.author or user.is_superuser %}
-                    <a href="{% url 'comments:delete_comment' article.slug comment.id %}" class="text-danger">Supprimer</a>
-                {% endif %}
-            </small>
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block content %}
+    <article>
+        <h1>{{ article.title }}</h1>
+        <p class="text-muted">
+            Publié le {{ article.created_at|date:"d F Y à H:i" }} par {{ article.author.username }}
+        </p>
+
+        {% if article.featured_image %}
+            <img src="{{ article.featured_image.url }}" alt="{{ article.title }}" class="img-fluid mb-4">
+        {% endif %}
+
+        <div class="mb-4">
+            {{ article.content|linebreaks }}
         </div>
-    {% empty %}
-        <div class="alert alert-info">Aucun commentaire pour cet article.</div>
-    {% endfor %}
-</div>
+
+        <div class="mb-4">
+            <span class="badge bg-secondary">Catégories :</span>
+            {% for category in article.categories.all %}
+                <a href="{% url 'blog:category_detail' category.slug %}" class="badge bg-secondary">{{ category.name }}</a>
+            {% endfor %}
+
+            <span class="badge bg-info">Tags :</span>
+            {% for tag in article.tags.all %}
+                <a href="{% url 'blog:tag_detail' tag.slug %}" class="badge bg-info">{{ tag.name }}</a>
+            {% endfor %}
+        </div>
+
+        {% if user == article.author or user.is_superuser %}
+            <div class="mb-4">
+                <a href="{% url 'blog:article_update' article.slug %}" class="btn btn-warning">Modifier</a>
+                <a href="{% url 'blog:article_delete' article.slug %}" class="btn btn-danger">Supprimer</a>
+            </div>
+        {% endif %}
+    </article>
+
+    <hr>
+
+    <!-- Dans la section des commentaires -->
+    {% if user.is_authenticated %}
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Laisser un commentaire</h5>
+                <form method="post" action="{% url 'comments:add_comment' article.slug %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="content" class="form-label">Votre commentaire</label>
+                        <textarea class="form-control" id="content" name="content" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Publier</button>
+                </form>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <a href="{% url 'login' %}?next={{ request.path }}">Connectez-vous</a> pour laisser un commentaire.
+        </div>
+    {% endif %}
+
+    <div class="list-group">
+        {% for comment in article.comments.all %}
+            <div class="list-group-item">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ comment.author.username }}</h5>
+                    <small>{{ comment.created_at|timesince }} ago</small>
+                </div>
+                <p class="mb-1">{{ comment.content }}</p>
+                <small class="text-muted">
+                    {% if user == comment.author or user.is_superuser %}
+                        <a href="{% url 'comments:delete_comment' article.slug comment.id %}" class="text-danger">Supprimer</a>
+                    {% endif %}
+                </small>
+            </div>
+        {% empty %}
+            <div class="alert alert-info">Aucun commentaire pour cet article.</div>
+        {% endfor %}
+    </div>
+{% endblock %}

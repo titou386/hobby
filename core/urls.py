@@ -27,6 +27,11 @@ urlpatterns = [
     path("comments/", include("comments.urls")),
 ]
 
-# Pour servir les médias en développement
+# Debug toolbar and media files in development
 if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        path("__debug__/", include(debug_toolbar.urls)),
+    ] + urlpatterns
+
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

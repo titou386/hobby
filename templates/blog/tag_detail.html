@@ -1,21 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}Liste des Articles{% endblock %}
+{% block title %}Articles avec le tag {{ tag.name }}{% endblock %}
 
 {% block content %}
-    <h1 class="mb-4">Articles Récents</h1>
-
-    <div class="row mb-4">
-        <div class="col-md-8">
-            <form method="get" action="{% url 'blog:article_list' %}" class="d-flex">
-                <input class="form-control me-2" type="search" name="q" placeholder="Rechercher..." value="{{ request.GET.q }}">
-                <button class="btn btn-outline-success" type="submit">Rechercher</button>
-            </form>
-        </div>
-        <div class="col-md-4 text-end">
-            <a href="{% url 'blog:category_list' %}" class="btn btn-outline-primary">Catégories</a>
-            <a href="{% url 'blog:tag_list' %}" class="btn btn-outline-primary">Tags</a>
-        </div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Articles avec le tag "{{ tag.name }}"</h1>
+        <span class="badge bg-primary">
+            <i class="fas fa-tags me-1"></i> {{ articles.count }} article(s)
+        </span>
     </div>
 
     {% for article in articles %}
@@ -33,16 +25,16 @@
             <div class="card-footer bg-white">
                 <div class="d-flex flex-wrap gap-2">
                     {% for category in article.categories.all %}
-                        <a href="{% url 'blog:category_detail' category.slug %}" class="badge bg-secondary">{{ category.name }}</a>
+                        <span class="badge bg-secondary">{{ category.name }}</span>
                     {% endfor %}
-                    {% for tag in article.tags.all %}
-                        <a href="{% url 'blog:tag_detail' tag.slug %}" class="badge bg-info">{{ tag.name }}</a>
+                    {% for t in article.tags.all %}
+                        <a href="{% url 'blog:tag_detail' t.slug %}" class="badge bg-info">{{ t.name }}</a>
                     {% endfor %}
                 </div>
             </div>
         </div>
     {% empty %}
-        <div class="alert alert-info">Aucun article trouvé.</div>
+        <div class="alert alert-info">Aucun article avec ce tag.</div>
     {% endfor %}
 
     <!-- Pagination -->
